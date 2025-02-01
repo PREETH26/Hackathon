@@ -7,7 +7,7 @@ import {
 const Lessons = () => {
   const [activeSection, setActiveSection] = useState(0);
   const [selectedRating, setSelectedRating] = useState(null);
-  const [expandedModules, setExpandedModules] = useState([0]);
+  const [expandedModules, setExpandedModules] = useState({});  // Changed to an object
 
   const courseContent = [
     {
@@ -43,12 +43,13 @@ const Lessons = () => {
     { title: "Final Project", completed: false }
   ];
 
-  const toggleModule = (index) => {
-    setExpandedModules(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+  // Updated toggle logic
+  const toggleModule = (sectionIndex, moduleIndex) => {
+    setExpandedModules(prev => {
+      const sectionExpanded = prev[sectionIndex] || {};
+      const newSectionExpanded = { ...sectionExpanded, [moduleIndex]: !sectionExpanded[moduleIndex] };
+      return { ...prev, [sectionIndex]: newSectionExpanded };
+    });
   };
 
   const handleRating = (rating) => setSelectedRating(rating);
@@ -64,7 +65,7 @@ const Lessons = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-screen bg-gray-200">
+    <div className="flex items-center justify-center min-h-screen w-screen bg-gray-200 ">
       <div className="bg-white p-8 rounded-lg shadow-2xl shadow-black w-full max-w-md">
         <h1 className="text-2xl font-semibold mb-8">Lesson 1</h1>
     
@@ -72,9 +73,7 @@ const Lessons = () => {
           {["Course Content", "Roadmap", "Reviews"].map((section, index) => (
             <button 
               key={index}
-              className={`px-4 py-2 rounded-lg text-lg ${
-                activeSection === index ? 'bg-blue-600 text-white' : 'bg-gray-100'
-              }`}
+              className={`px-4 py-2 rounded-lg text-lg ${activeSection === index ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
               onClick={() => setActiveSection(index)}
             >
               {section}
@@ -89,18 +88,19 @@ const Lessons = () => {
               <Card key={sectionIndex}>
                 <CardHeader 
                   className="cursor-pointer flex justify-between items-center"
-                  onClick={() => toggleModule(sectionIndex)}
                 >
                   <CardTitle className="text-xl">{section.title}</CardTitle>
-                  {expandedModules.includes(sectionIndex) ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  <ChevronDown className="w-5 h-5" />
                 </CardHeader>
-                {expandedModules.includes(sectionIndex) && (
-                  <CardContent>
-                    <div className="space-y-3">
-                      {section.modules.map((module, moduleIndex) => (
+                <CardContent>
+                  <div className="space-y-3">
+                    {section.modules.map((module, moduleIndex) => {
+                      const isModuleExpanded = expandedModules[sectionIndex]?.[moduleIndex];
+
+                      return (
                         <div 
                           key={moduleIndex}
-                          className={`p-3 rounded-lg flex items-center justify-between
+                          className={`p-3 rounded-lg flex items-center justify-between 
                             ${module.locked ? 'bg-gray-100' : 'bg-white hover:bg-gray-50'} 
                             ${module.completed ? 'border-l-4 border-green-500' : ''}`}
                         >
@@ -111,11 +111,23 @@ const Lessons = () => {
                             </span>
                           </div>
                           <span className="text-sm text-gray-500">{module.duration}</span>
+                          <button 
+                            onClick={() => toggleModule(sectionIndex, moduleIndex)}
+                            className="ml-2 text-gray-500"
+                          >
+                            {isModuleExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                          </button>
+                          {isModuleExpanded && (
+                            <div className="mt-3">
+                              {/* Module Expanded Content */}
+                              <p>More content here...</p>
+                            </div>
+                          )}
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                )}
+                      );
+                    })}
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>

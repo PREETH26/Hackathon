@@ -12,7 +12,7 @@ const Dashboard = () => {
 
   // Dummy chart data for subjects progress
   const progressData = {
-    labels: ['Mathematics', 'Science', 'History'],
+    labels: ['Mathematics', 'Science', 'Machine Learning'],
     datasets: [
       {
         data: [40, 25, 35],
@@ -50,6 +50,7 @@ const Dashboard = () => {
           <span className="font-medium text-lg">Start Learning</span>
         </div>
       </Link>
+      <br/>
       <Link to="/chatbot" className="w-48">
         <div className="w-full p-4 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 text-center cursor-pointer">
           <span className="font-medium text-lg">Ask Doubt</span>
