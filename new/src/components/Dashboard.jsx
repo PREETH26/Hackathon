@@ -7,7 +7,7 @@ const Dashboard = () => {
   const feedbacks = [
     "Great progress in Mathematics!",
     "Needs improvement in Science.",
-    "Excellent grasp on History."
+    "Excellent grasp on Machine Learning."
   ]
 
   // Dummy chart data for subjects progress
